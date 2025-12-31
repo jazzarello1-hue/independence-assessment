@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azzarello Independence Readiness Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            font-size: 1.5em;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        
+        .options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .option {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .option label {
+            display: block;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .option input[type="radio"] {
+            display: none;
+        }
+        
+        .option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .option label:hover {
+            border-color: #667eea;
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        #results {
+            margin-top: 40px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s;
+        }
+        
+        #results.show {
+            opacity: 1;
+            max-height: 2000px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .result-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+        
+        .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+        
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .breakdown-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .breakdown-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .breakdown-score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Independence Readiness Assessment</h1>
+            <p>Monthly Check-In for Teenagers (Under 18)</p>
+        </header>
+        
+        <div class="content">
+            <form id="assessmentForm">
+                <!-- Part 1: Life Skills & Daily Habits -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>Part 1: Life Skills & Daily Habits</h2>
+                    </div>
+                    
+                    <div class="question">
+                        <div class="question-text">1. How consistently do you maintain personal hygiene (shower, brush teeth, clean clothes)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q1" value="3" id="q1-3">
+                                <label for="q1-3">Always (Daily)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q1" value="2" id="q1-2">
+                                <label for="q1-2">Usually (Most Days)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q1" value="1" id="q1-1">
+                                <label for="q1-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q1" value="0" id="q1-0">
+                                <label for="q1-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">2. Do you manage your time well (school work, chores, sleep schedule)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q2" value="3" id="q2-3">
+                                <label for="q2-3">Very Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q2" value="2" id="q2-2">
+                                <label for="q2-2">Pretty Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q2" value="1" id="q2-1">
+                                <label for="q2-1">Struggling</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q2" value="0" id="q2-0">
+                                <label for="q2-0">Need Help</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">3. How often do you get adequate sleep (7-9 hours)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q3" value="3" id="q3-3">
+                                <label for="q3-3">6-7 Nights/Week</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q3" value="2" id="q3-2">
+                                <label for="q3-2">4-5 Nights/Week</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q3" value="1" id="q3-1">
+                                <label for="q3-1">2-3 Nights/Week</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q3" value="0" id="q3-0">
+                                <label for="q3-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">4. Do you exercise or stay physically active?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q4" value="3" id="q4-3">
+                                <label for="q4-3">5+ Days/Week</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q4" value="2" id="q4-2">
+                                <label for="q4-2">3-4 Days/Week</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q4" value="1" id="q4-1">
+                                <label for="q4-1">1-2 Days/Week</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q4" value="0" id="q4-0">
+                                <label for="q4-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">5. How well do you handle your school/work responsibilities?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q5" value="3" id="q5-3">
+                                <label for="q5-3">Excellent</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q5" value="2" id="q5-2">
+                                <label for="q5-2">Good</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q5" value="1" id="q5-1">
+                                <label for="q5-1">Fair</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q5" value="0" id="q5-0">
+                                <label for="q5-0">Poor</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">6. Can you manage basic first aid (bandages, ice packs, knowing when to ask for help)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q6" value="3" id="q6-3">
+                                <label for="q6-3">Confident</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q6" value="2" id="q6-2">
+                                <label for="q6-2">Mostly</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q6" value="1" id="q6-1">
+                                <label for="q6-1">Learning</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q6" value="0" id="q6-0">
+                                <label for="q6-0">No Idea</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">7. Do you eat balanced meals regularly?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q7" value="3" id="q7-3">
+                                <label for="q7-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q7" value="2" id="q7-2">
+                                <label for="q7-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q7" value="1" id="q7-1">
+                                <label for="q7-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q7" value="0" id="q7-0">
+                                <label for="q7-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">8. Can you navigate using maps or GPS independently?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q8" value="3" id="q8-3">
+                                <label for="q8-3">Yes, Easily</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q8" value="2" id="q8-2">
+                                <label for="q8-2">Mostly</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q8" value="1" id="q8-1">
+                                <label for="q8-1">With Help</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q8" value="0" id="q8-0">
+                                <label for="q8-0">Not Really</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">9. Do you limit screen time and avoid excessive social media/gaming?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q9" value="3" id="q9-3">
+                                <label for="q9-3">Very Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q9" value="2" id="q9-2">
+                                <label for="q9-2">Pretty Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q9" value="1" id="q9-1">
+                                <label for="q9-1">Struggling</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q9" value="0" id="q9-0">
+                                <label for="q9-0">Not Well</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 2: Household Contribution -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>Part 2: Household Contribution</h2>
+                    </div>
+                    
+                    <div class="question">
+                        <div class="question-text">10. How often do you help cook meals or prep food?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q10" value="3" id="q10-3">
+                                <label for="q10-3">Weekly+</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q10" value="2" id="q10-2">
+                                <label for="q10-2">2-3x/Month</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q10" value="1" id="q10-1">
+                                <label for="q10-1">Rarely</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q10" value="0" id="q10-0">
+                                <label for="q10-0">Never</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">11. Do you clean up after yourself without being asked?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q11" value="3" id="q11-3">
+                                <label for="q11-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q11" value="2" id="q11-2">
+                                <label for="q11-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q11" value="1" id="q11-1">
+                                <label for="q11-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q11" value="0" id="q11-0">
+                                <label for="q11-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">12. How well do you manage your own laundry?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q12" value="3" id="q12-3">
+                                <label for="q12-3">Independently</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q12" value="2" id="q12-2">
+                                <label for="q12-2">With Reminders</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q12" value="1" id="q12-1">
+                                <label for="q12-1">Parents Help</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q12" value="0" id="q12-0">
+                                <label for="q12-0">Parents Do It</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">13. Do you keep your personal space clean and organized?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q13" value="3" id="q13-3">
+                                <label for="q13-3">Very Clean</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q13" value="2" id="q13-2">
+                                <label for="q13-2">Mostly Clean</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q13" value="1" id="q13-1">
+                                <label for="q13-1">Somewhat Messy</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q13" value="0" id="q13-0">
+                                <label for="q13-0">Very Messy</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">14. How often do you help with household chores (vacuuming, dishes, trash)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q14" value="3" id="q14-3">
+                                <label for="q14-3">Weekly+</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q14" value="2" id="q14-2">
+                                <label for="q14-2">2-3x/Month</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q14" value="1" id="q14-1">
+                                <label for="q14-1">Rarely</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q14" value="0" id="q14-0">
+                                <label for="q14-0">Never</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">15. Can you do basic household maintenance (change light bulbs, unclog drains, etc.)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q15" value="3" id="q15-3">
+                                <label for="q15-3">Confidently</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q15" value="2" id="q15-2">
+                                <label for="q15-2">With Help</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q15" value="1" id="q15-1">
+                                <label for="q15-1">Learning</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q15" value="0" id="q15-0">
+                                <label for="q15-0">Can't Yet</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">16. Do you help with yard work or outdoor maintenance?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q16" value="3" id="q16-3">
+                                <label for="q16-3">Regularly</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q16" value="2" id="q16-2">
+                                <label for="q16-2">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q16" value="1" id="q16-1">
+                                <label for="q16-1">Rarely</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q16" value="0" id="q16-0">
+                                <label for="q16-0">Never</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">17. Can you grocery shop and make a shopping list?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q17" value="3" id="q17-3">
+                                <label for="q17-3">Yes, Alone</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q17" value="2" id="q17-2">
+                                <label for="q17-2">With Help</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q17" value="1" id="q17-1">
+                                <label for="q17-1">Learning</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q17" value="0" id="q17-0">
+                                <label for="q17-0">Not Yet</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">18. Do you help care for pets (if applicable)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q18" value="3" id="q18-3">
+                                <label for="q18-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q18" value="2" id="q18-2">
+                                <label for="q18-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q18" value="1" id="q18-1">
+                                <label for="q18-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q18" value="0" id="q18-0">
+                                <label for="q18-0">N/A or Never</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 3: Financial Literacy -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>Part 3: Financial Literacy</h2>
+                    </div>
+                    
+                    <div class="question">
+                        <div class="question-text">19. Do you understand how to create and follow a budget?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q19" value="3" id="q19-3">
+                                <label for="q19-3">Yes, I Do It</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q19" value="2" id="q19-2">
+                                <label for="q19-2">Understand It</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q19" value="1" id="q19-1">
+                                <label for="q19-1">Basic Idea</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q19" value="0" id="q19-0">
+                                <label for="q19-0">No Clue</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">20. Do you track your spending and save money regularly?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q20" value="3" id="q20-3">
+                                <label for="q20-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q20" value="2" id="q20-2">
+                                <label for="q20-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q20" value="1" id="q20-1">
+                                <label for="q20-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q20" value="0" id="q20-0">
+                                <label for="q20-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">21. Do you understand how bills work (rent, utilities, insurance)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q21" value="3" id="q21-3">
+                                <label for="q21-3">Very Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q21" value="2" id="q21-2">
+                                <label for="q21-2">Somewhat</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q21" value="1" id="q21-1">
+                                <label for="q21-1">A Little</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q21" value="0" id="q21-0">
+                                <label for="q21-0">Not Really</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">22. Can you make smart spending decisions (needs vs. wants)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q22" value="3" id="q22-3">
+                                <label for="q22-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q22" value="2" id="q22-2">
+                                <label for="q22-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q22" value="1" id="q22-1">
+                                <label for="q22-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q22" value="0" id="q22-0">
+                                <label for="q22-0">Struggle With It</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">23. Do you manage your allowance responsibly (tithe, save, spend wisely)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q23" value="3" id="q23-3">
+                                <label for="q23-3">Very Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q23" value="2" id="q23-2">
+                                <label for="q23-2">Pretty Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q23" value="1" id="q23-1">
+                                <label for="q23-1">Not Great</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q23" value="0" id="q23-0">
+                                <label for="q23-0">Poorly</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">24. Do you understand investing basics (stocks, retirement, compound interest)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q24" value="3" id="q24-3">
+                                <label for="q24-3">Yes, Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q24" value="2" id="q24-2">
+                                <label for="q24-2">Somewhat</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q24" value="1" id="q24-1">
+                                <label for="q24-1">A Little</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q24" value="0" id="q24-0">
+                                <label for="q24-0">Not Yet</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">25. Can you compare prices and make cost-effective choices?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q25" value="3" id="q25-3">
+                                <label for="q25-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q25" value="2" id="q25-2">
+                                <label for="q25-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q25" value="1" id="q25-1">
+                                <label for="q25-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q25" value="0" id="q25-0">
+                                <label for="q25-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">26. Do you understand credit, debt, and interest?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q26" value="3" id="q26-3">
+                                <label for="q26-3">Very Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q26" value="2" id="q26-2">
+                                <label for="q26-2">Somewhat</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q26" value="1" id="q26-1">
+                                <label for="q26-1">A Little</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q26" value="0" id="q26-0">
+                                <label for="q26-0">Not Really</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">27. Can you research major purchases and avoid impulse buying?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q27" value="3" id="q27-3">
+                                <label for="q27-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q27" value="2" id="q27-2">
+                                <label for="q27-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q27" value="1" id="q27-1">
+                                <label for="q27-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q27" value="0" id="q27-0">
+                                <label for="q27-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 4: Personal Discipline & Character -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>Part 4: Personal Discipline & Character</h2>
+                    </div>
+                    
+                    <div class="question">
+                        <div class="question-text">28. How well do you control your emotions when frustrated or upset?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q28" value="3" id="q28-3">
+                                <label for="q28-3">Very Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q28" value="2" id="q28-2">
+                                <label for="q28-2">Pretty Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q28" value="1" id="q28-1">
+                                <label for="q28-1">Struggling</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q28" value="0" id="q28-0">
+                                <label for="q28-0">Not Well</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">29. Do you communicate respectfully with family members?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q29" value="3" id="q29-3">
+                                <label for="q29-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q29" value="2" id="q29-2">
+                                <label for="q29-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q29" value="1" id="q29-1">
+                                <label for="q29-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q29" value="0" id="q29-0">
+                                <label for="q29-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">30. Can you set goals and follow through on commitments?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q30" value="3" id="q30-3">
+                                <label for="q30-3">Consistently</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q30" value="2" id="q30-2">
+                                <label for="q30-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q30" value="1" id="q30-1">
+                                <label for="q30-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q30" value="0" id="q30-0">
+                                <label for="q30-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">31. Do you take responsibility for your mistakes?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q31" value="3" id="q31-3">
+                                <label for="q31-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q31" value="2" id="q31-2">
+                                <label for="q31-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q31" value="1" id="q31-1">
+                                <label for="q31-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q31" value="0" id="q31-0">
+                                <label for="q31-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">32. Are you honest and trustworthy?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q32" value="3" id="q32-3">
+                                <label for="q32-3">Very Much</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q32" value="2" id="q32-2">
+                                <label for="q32-2">Mostly</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q32" value="1" id="q32-1">
+                                <label for="q32-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q32" value="0" id="q32-0">
+                                <label for="q32-0">Working On It</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">33. Do you show respect for others' property and space?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q33" value="3" id="q33-3">
+                                <label for="q33-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q33" value="2" id="q33-2">
+                                <label for="q33-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q33" value="1" id="q33-1">
+                                <label for="q33-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q33" value="0" id="q33-0">
+                                <label for="q33-0">Need to Improve</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">34. Can you handle criticism and feedback constructively?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q34" value="3" id="q34-3">
+                                <label for="q34-3">Very Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q34" value="2" id="q34-2">
+                                <label for="q34-2">Pretty Well</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q34" value="1" id="q34-1">
+                                <label for="q34-1">Struggling</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q34" value="0" id="q34-0">
+                                <label for="q34-0">Difficult</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">35. Do you help others without expecting something in return?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q35" value="3" id="q35-3">
+                                <label for="q35-3">Often</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q35" value="2" id="q35-2">
+                                <label for="q35-2">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q35" value="1" id="q35-1">
+                                <label for="q35-1">Rarely</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q35" value="0" id="q35-0">
+                                <label for="q35-0">Not Really</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">36. Do you respect household rules and curfews?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="q36" value="3" id="q36-3">
+                                <label for="q36-3">Always</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q36" value="2" id="q36-2">
+                                <label for="q36-2">Usually</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q36" value="1" id="q36-1">
+                                <label for="q36-1">Sometimes</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="q36" value="0" id="q36-0">
+                                <label for="q36-0">Rarely</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Calculate My Score</button>
+            </form>
+
+            <!-- Results Section -->
+            <div id="results">
+                <div class="result-card">
+                    <h3>Overall Independence Score</h3>
+                    <div class="score"><span id="totalScore">0%</span></div>
+                </div>
+                
+                <div class="breakdown">
+                    <div class="breakdown-item">
+                        <h4>Life Skills & Daily Habits</h4>
+                        <div class="breakdown-score"><span id="part1Score">0%</span></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <h4>Household Contribution</h4>
+                        <div class="breakdown-score"><span id="part2Score">0%</span></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <h4>Financial Literacy</h4>
+                        <div class="breakdown-score"><span id="part3Score">0%</span></div>
+                    </div>
+                    <div class="breakdown-item">
+                        <h4>Personal Discipline & Character</h4>
+                        <div class="breakdown-score"><span id="part4Score">0%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('assessmentForm');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const part1Questions = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9'];
+            const part2Questions = ['q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17', 'q18'];
+            const part3Questions = ['q19', 'q20', 'q21', 'q22', 'q23', 'q24', 'q25', 'q26', 'q27'];
+            const part4Questions = ['q28', 'q29', 'q30', 'q31', 'q32', 'q33', 'q34', 'q35', 'q36'];
+            
+            function calculatePartScore(questions) {
+                let total = 0;
+                let answered = 0;
+                questions.forEach(q => {
+                    const selected = document.querySelector(`input[name="${q}"]:checked`);
+                    if (selected) {
+                        total += parseInt(selected.value);
+                        answered++;
+                    }
+                });
+                return answered > 0 ? (total / (answered * 3)) * 100 : 0;
+            }
+            
+            const part1 = calculatePartScore(part1Questions);
+            const part2 = calculatePartScore(part2Questions);
+            const part3 = calculatePartScore(part3Questions);
+            const part4 = calculatePartScore(part4Questions);
+            const overall = (part1 + part2 + part3 + part4) / 4;
+            
+            // Display results
+            document.getElementById('totalScore').textContent = overall.toFixed(1) + '%';
+            document.getElementById('part1Score').textContent = part1.toFixed(1) + '%';
+            document.getElementById('part2Score').textContent = part2.toFixed(1) + '%';
+            document.getElementById('part3Score').textContent = part3.toFixed(1) + '%';
+            document.getElementById('part4Score').textContent = part4.toFixed(1) + '%';
+            
+            document.getElementById('results').classList.add('show');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
