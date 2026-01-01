@@ -24,1083 +24,413 @@
         const Download = (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>;
         const Upload = (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>;
         const Save = (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>;
-        import React, { useState, useEffect } from 'react';
-import { Home, DollarSign, GraduationCap, TrendingUp, Calendar, CheckCircle, AlertCircle, Download, Upload, Save } from 'lucide-react';
 
-export default function TeenAssessment() {
-  const [showResults, setShowResults] = useState(false);
-  const [age, setAge] = useState(16);
-  const [savedMonths, setSavedMonths] = useState([]);
-  
-  const [answers, setAnswers] = useState({
-    enrolled: true,
-    grades: 'mostly-as-bs',
-    completesHomework: false,
-    gymGoal: '0',
-    readingGoal: '0',
-    hobbyName: '',
-    hobbyHours: '0',
-    gymActual: '0',
-    readingActual: '0',
-    bedtimeActual: '0',
-    wakeActual: '0',
-    bedroomStandard: '5',
-    bathroomStandard: '5',
-    bedroomActual: '5',
-    bathroomActual: '5',
-    householdChores: '0',
-    moneyReadiness: '5',
-    hasBudget: '',
-    laundryReadiness: '5',
-    didLaundry: '',
-    cookingReadiness: '5',
-    mealsHelped: '0',
-    allowanceAmount: '250',
-    titheAmount: '',
-    saveAmount: '',
-    investAmount: '',
-    spendWisely: '',
-    goals2026: '',
-    growthAreas: '',
-    needFromParents: '',
-    whatsWorking: '',
-    whatsNotWorking: ''
-  });
+        function TeenAssessment() {
+          const [showResults, setShowResults] = useState(false);
+          const [age, setAge] = useState(16);
+          const [savedMonths, setSavedMonths] = useState([]);
+          
+          const [answers, setAnswers] = useState({
+            enrolled: true, grades: 'mostly-as-bs', completesHomework: false,
+            gymGoal: '0', readingGoal: '0', hobbyName: '', hobbyHours: '0',
+            gymActual: '0', readingActual: '0', bedtimeActual: '0', wakeActual: '0',
+            bedroomStandard: '5', bathroomStandard: '5', bedroomActual: '5', bathroomActual: '5',
+            householdChores: '0', moneyReadiness: '5', hasBudget: '',
+            laundryReadiness: '5', didLaundry: '', cookingReadiness: '5', mealsHelped: '0',
+            allowanceAmount: '250', titheAmount: '', saveAmount: '', investAmount: '', spendWisely: '',
+            goals2026: '', growthAreas: '', needFromParents: '', whatsWorking: '', whatsNotWorking: ''
+          });
 
-  const [skillCommitments, setSkillCommitments] = useState({
-    dishes: false, trash: false, tidySpaces: false,
-    bathroom: false, vacuum: false, mop: false,
-    laundry: false, cooking: false,
-    yardWork: false, carWash: false,
-    airFilters: false, ceilingFans: false, doorknobs: false,
-    lightBulbs: false, drains: false, basicRepairs: false,
-    mealPrep: false, payBills: false, filing: false
-  });
+          const [skillCommitments, setSkillCommitments] = useState({
+            dishes: false, trash: false, tidySpaces: false, bathroom: false, vacuum: false, mop: false,
+            laundry: false, cooking: false, yardWork: false, carWash: false, airFilters: false,
+            ceilingFans: false, doorknobs: false, lightBulbs: false, drains: false, basicRepairs: false,
+            mealPrep: false, payBills: false, filing: false
+          });
 
-  // Load saved data on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('azzarello-current-assessment');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        setAnswers(data.answers || answers);
-        setSkillCommitments(data.skillCommitments || skillCommitments);
-        setAge(data.age || 16);
-      } catch (e) {
-        console.error('Error loading saved data');
-      }
-    }
+          useEffect(() => {
+            const saved = localStorage.getItem('azzarello-current-assessment');
+            if (saved) {
+              try {
+                const data = JSON.parse(saved);
+                setAnswers(data.answers || answers);
+                setSkillCommitments(data.skillCommitments || skillCommitments);
+                setAge(data.age || 16);
+              } catch (e) { console.error('Error loading'); }
+            }
+            const months = localStorage.getItem('azzarello-saved-months');
+            if (months) {
+              try { setSavedMonths(JSON.parse(months)); } catch (e) {}
+            }
+          }, []);
 
-    const months = localStorage.getItem('azzarello-saved-months');
-    if (months) {
-      try {
-        setSavedMonths(JSON.parse(months));
-      } catch (e) {
-        console.error('Error loading saved months');
-      }
-    }
-  }, []);
+          useEffect(() => {
+            localStorage.setItem('azzarello-current-assessment', JSON.stringify({ answers, skillCommitments, age }));
+          }, [answers, skillCommitments, age]);
 
-  // Auto-save on changes
-  useEffect(() => {
-    const dataToSave = { answers, skillCommitments, age };
-    localStorage.setItem('azzarello-current-assessment', JSON.stringify(dataToSave));
-  }, [answers, skillCommitments, age]);
+          const saveMonthlySnapshot = () => {
+            const month = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+            const snapshot = { month, date: new Date().toISOString(), readiness: calculateReadiness(), answers, skillCommitments, age };
+            const updated = [...savedMonths, snapshot];
+            setSavedMonths(updated);
+            localStorage.setItem('azzarello-saved-months', JSON.stringify(updated));
+            alert(\`Saved \${month}!\`);
+          };
 
-  const saveMonthlySnapshot = () => {
-    const month = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-    const snapshot = {
-      month,
-      date: new Date().toISOString(),
-      readiness: calculateReadiness(),
-      answers,
-      skillCommitments,
-      age
-    };
+          const exportData = () => {
+            const blob = new Blob([JSON.stringify({ current: { answers, skillCommitments, age }, history: savedMonths }, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = \`assessment-\${new Date().toISOString().split('T')[0]}.json\`;
+            a.click();
+          };
 
-    const updated = [...savedMonths, snapshot];
-    setSavedMonths(updated);
-    localStorage.setItem('azzarello-saved-months', JSON.stringify(updated));
-    
-    alert(`Saved snapshot for ${month}!`);
-  };
+          const importData = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const data = JSON.parse(e.target.result);
+                if (data.current) {
+                  setAnswers(data.current.answers);
+                  setSkillCommitments(data.current.skillCommitments);
+                  setAge(data.current.age);
+                }
+                if (data.history) {
+                  setSavedMonths(data.history);
+                  localStorage.setItem('azzarello-saved-months', JSON.stringify(data.history));
+                }
+                alert('Imported!');
+              } catch (err) { alert('Error importing'); }
+            };
+            reader.readAsText(file);
+          };
 
-  const exportData = () => {
-    const data = {
-      current: { answers, skillCommitments, age },
-      history: savedMonths
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `azzarello-assessment-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-  };
+          const handleCheckbox = (key) => setAnswers(prev => ({ ...prev, [key]: !prev[key] }));
+          const handleSkillToggle = (key) => setSkillCommitments(prev => ({ ...prev, [key]: !prev[key] }));
+          const handleChange = (key, value) => setAnswers(prev => ({ ...prev, [key]: value }));
 
-  const importData = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        if (data.current) {
-          setAnswers(data.current.answers);
-          setSkillCommitments(data.current.skillCommitments);
-          setAge(data.current.age);
-        }
-        if (data.history) {
-          setSavedMonths(data.history);
-          localStorage.setItem('azzarello-saved-months', JSON.stringify(data.history));
-        }
-        alert('Data imported successfully!');
-      } catch (err) {
-        alert('Error importing file. Please check the file format.');
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  const handleCheckbox = (key) => {
-    setAnswers(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handleSkillToggle = (key) => {
-    setSkillCommitments(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handleChange = (key, value) => {
-    setAnswers(prev => ({ ...prev, [key]: value }));
-  };
-
-  const calculateReadiness = () => {
-    let score = 0;
-    
-    if (answers.enrolled) score += 10;
-    if (answers.grades === 'all-as') score += 15;
-    else if (answers.grades === 'mostly-as-bs') score += 12;
-    else if (answers.grades === 'mostly-bs') score += 8;
-    else score += 3;
-    if (answers.completesHomework) score += 5;
-    
-    const gymGoal = parseInt(answers.gymGoal) || 0;
-    const gymActual = parseInt(answers.gymActual) || 0;
-    if (gymActual >= gymGoal && gymGoal >= 3) score += 6;
-    else if (gymActual >= 3) score += 4;
-    else if (gymActual >= 1) score += 2;
-    
-    const readingGoal = parseInt(answers.readingGoal) || 0;
-    const readingActual = parseInt(answers.readingActual) || 0;
-    if (readingActual >= readingGoal && readingGoal >= 1) score += 6;
-    else if (readingActual >= 1) score += 3;
-    
-    const hobbyHours = parseInt(answers.hobbyHours) || 0;
-    if (hobbyHours >= 5) score += 4;
-    else if (hobbyHours >= 2) score += 2;
-    
-    const bedtime = parseInt(answers.bedtimeActual) || 0;
-    if (bedtime >= 6) score += 5;
-    else if (bedtime >= 4) score += 3;
-    
-    const wake = parseInt(answers.wakeActual) || 0;
-    if (wake >= 6) score += 4;
-    else if (wake >= 4) score += 2;
-    
-    const bedroomStd = parseInt(answers.bedroomStandard) || 0;
-    const bedroomAct = parseInt(answers.bedroomActual) || 0;
-    const bathroomStd = parseInt(answers.bathroomStandard) || 0;
-    const bathroomAct = parseInt(answers.bathroomActual) || 0;
-    
-    if (bedroomAct >= bedroomStd && bedroomStd >= 7) score += 4;
-    else if (bedroomAct >= 7) score += 3;
-    else if (bedroomAct >= 5) score += 1;
-    
-    if (bathroomAct >= bathroomStd && bathroomStd >= 7) score += 4;
-    else if (bathroomAct >= 7) score += 3;
-    else if (bathroomAct >= 5) score += 1;
-    
-    const chores = parseInt(answers.householdChores) || 0;
-    if (chores >= 7) score += 8;
-    else if (chores >= 4) score += 5;
-    else if (chores >= 1) score += 2;
-    
-    const meals = parseInt(answers.mealsHelped) || 0;
-    if (meals >= 8) score += 5;
-    else if (meals >= 4) score += 3;
-    else if (meals >= 1) score += 1;
-    
-    const money = parseInt(answers.moneyReadiness) || 0;
-    score += Math.round((money / 10) * 7);
-    
-    const laundry = parseInt(answers.laundryReadiness) || 0;
-    score += Math.round((laundry / 10) * 7);
-    
-    const cooking = parseInt(answers.cookingReadiness) || 0;
-    score += Math.round((cooking / 10) * 6);
-    
-    if (answers.hasBudget === 'yes-stuck') score += 5;
-    else if (answers.hasBudget === 'yes-struggled') score += 2;
-    
-    if (answers.didLaundry === 'yes-always') score += 5;
-    else if (answers.didLaundry === 'yes-sometimes') score += 2;
-    
-    if (answers.titheAmount && answers.saveAmount && answers.spendWisely === 'yes') score += 5;
-    
-    return Math.min(score, 100);
-  };
-
-  const readiness = calculateReadiness();
-
-  const calculateSkillValue = () => {
-    let total = 0;
-    const skills = {
-      dishes: 100, trash: 100, tidySpaces: 100,
-      bathroom: 100, vacuum: 100, mop: 100,
-      laundry: 100, cooking: 100,
-      yardWork: 50, carWash: 50,
-      airFilters: 50, ceilingFans: 50, doorknobs: 50,
-      lightBulbs: 25, drains: 25, basicRepairs: 25,
-      mealPrep: 100, payBills: 100, filing: 50
-    };
-
-    Object.keys(skillCommitments).forEach(key => {
-      if (skillCommitments[key]) total += skills[key];
-    });
-
-    return total;
-  };
-
-  const skillValue = calculateSkillValue();
-  const targetValue = age <= 15 ? 300 : 450;
-
-  const getReadinessLevel = () => {
-    if (readiness >= 80) {
-      return {
-        level: "Thriving & Almost Ready",
-        message: "You're building real independence. Keep it up!"
-      };
-    } else if (readiness >= 60) {
-      return {
-        level: "Growing Strong",
-        message: "Solid progress. Focus on the gaps."
-      };
-    } else if (readiness >= 40) {
-      return {
-        level: "Building Foundation",
-        message: "Work to do. Let's make a plan."
-      };
-    } else {
-      return {
-        level: "Needs Attention",
-        message: "Time for honest conversation."
-      };
-    }
-  };
-
-  const readinessLevel = getReadinessLevel();
-
-  const skills = {
-    daily: [
-      { key: 'dishes', name: 'Kitchen cleanup', value: 100 },
-      { key: 'trash', name: 'Waste management', value: 100 },
-      { key: 'tidySpaces', name: 'Maintain shared spaces', value: 100 }
-    ],
-    weekly: [
-      { key: 'bathroom', name: 'Deep clean bathroom', value: 100 },
-      { key: 'vacuum', name: 'Vacuum house', value: 100 },
-      { key: 'mop', name: 'Mop floors', value: 100 },
-      { key: 'laundry', name: 'Do laundry', value: 100 },
-      { key: 'cooking', name: 'Cook meals (2x/week)', value: 100 },
-      { key: 'mealPrep', name: 'Shopping & meal prep', value: 100 },
-      { key: 'payBills', name: 'Pay bills on time', value: 100 },
-      { key: 'filing', name: 'File paperwork', value: 50 }
-    ],
-    monthly: [
-      { key: 'airFilters', name: 'Change air filters', value: 50 },
-      { key: 'ceilingFans', name: 'Clean ceiling fans', value: 50 },
-      { key: 'doorknobs', name: 'Sanitize high-touch areas', value: 50 }
-    ],
-    asNeeded: [
-      { key: 'yardWork', name: 'Yard work', value: 50 },
-      { key: 'carWash', name: 'Wash car', value: 50 },
-      { key: 'lightBulbs', name: 'Change light bulbs', value: 25 },
-      { key: 'drains', name: 'Unclog drains', value: 25 },
-      { key: 'basicRepairs', name: 'Basic repairs', value: 25 }
-    ]
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          {/* Header */}
-          <div className="border-b-2 border-slate-200 pb-6 mb-8">
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-4xl font-bold text-slate-900 mb-2">Azzarello Family Assessment</h1>
-                <p className="text-xl text-slate-600">Training for Independence</p>
-              </div>
-              
-              <div className="flex gap-2">
-                <button
-                  onClick={saveMonthlySnapshot}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors"
-                  title="Save this month's snapshot"
-                >
-                  <Save className="w-4 h-4" />
-                  Save Month
-                </button>
-                
-                <button
-                  onClick={exportData}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
-                  title="Download all data"
-                >
-                  <Download className="w-4 h-4" />
-                  Export
-                </button>
-                
-                <label className="flex items-center gap-2 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg text-sm cursor-pointer transition-colors">
-                  <Upload className="w-4 h-4" />
-                  Import
-                  <input
-                    type="file"
-                    accept=".json"
-                    onChange={importData}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            </div>
+          const calculateReadiness = () => {
+            let score = 0;
+            if (answers.enrolled) score += 10;
+            if (answers.grades === 'all-as') score += 15;
+            else if (answers.grades === 'mostly-as-bs') score += 12;
+            else if (answers.grades === 'mostly-bs') score += 8;
+            else score += 3;
+            if (answers.completesHomework) score += 5;
             
-            {savedMonths.length > 0 && (
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm font-semibold text-blue-900 mb-2">
-                  Saved Assessments: {savedMonths.length} month{savedMonths.length !== 1 ? 's' : ''}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {savedMonths.slice(-6).map((snapshot, idx) => (
-                    <span key={idx} className="text-xs bg-white px-2 py-1 rounded border border-blue-200">
-                      {snapshot.month}: {snapshot.readiness}%
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            const gymGoal = parseInt(answers.gymGoal) || 0;
+            const gymActual = parseInt(answers.gymActual) || 0;
+            if (gymActual >= gymGoal && gymGoal >= 3) score += 6;
+            else if (gymActual >= 3) score += 4;
+            else if (gymActual >= 1) score += 2;
             
-            <div className="mt-3 text-xs text-slate-500">
-              💾 Your answers auto-save as you type
-            </div>
-          </div>
-
-          {/* How This Works */}
-          <div className="bg-slate-100 rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">How This Assessment Works</h2>
+            const readingGoal = parseInt(answers.readingGoal) || 0;
+            const readingActual = parseInt(answers.readingActual) || 0;
+            if (readingActual >= readingGoal && readingGoal >= 1) score += 6;
+            else if (readingActual >= 1) score += 3;
             
-            <div className="space-y-4 text-slate-700">
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="font-semibold text-lg mb-1">This Is About Your Freedom</p>
-                <p className="text-sm">Master skills now → confidence at 18 → successful independence</p>
-              </div>
-              
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="font-semibold text-lg mb-1">You're Not Paying Rent</p>
-                <p className="text-sm">Your share: $1,017/month. Living alone: $4,425/month. This is education.</p>
-              </div>
-              
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="font-semibold text-lg mb-1">Skills = Independence</p>
-                <p className="text-sm">Every skill saves you thousands as an adult.</p>
-              </div>
-              
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="font-semibold text-lg mb-1">You Control Your Path</p>
-                <p className="text-sm">Choose skills. Set goals. Decide growth pace.</p>
-              </div>
-            </div>
+            const hobbyHours = parseInt(answers.hobbyHours) || 0;
+            if (hobbyHours >= 5) score += 4;
+            else if (hobbyHours >= 2) score += 2;
             
-            <div className="mt-6 p-4 bg-blue-600 text-white rounded-lg">
-              <p className="font-bold text-lg text-center">Goal: Launch you successfully into independent adulthood</p>
-            </div>
-          </div>
+            const bedtime = parseInt(answers.bedtimeActual) || 0;
+            if (bedtime >= 6) score += 5;
+            else if (bedtime >= 4) score += 3;
+            
+            const wake = parseInt(answers.wakeActual) || 0;
+            if (wake >= 6) score += 4;
+            else if (wake >= 4) score += 2;
+            
+            const bedroomStd = parseInt(answers.bedroomStandard) || 0;
+            const bedroomAct = parseInt(answers.bedroomActual) || 0;
+            const bathroomStd = parseInt(answers.bathroomStandard) || 0;
+            const bathroomAct = parseInt(answers.bathroomActual) || 0;
+            
+            if (bedroomAct >= bedroomStd && bedroomStd >= 7) score += 4;
+            else if (bedroomAct >= 7) score += 3;
+            else if (bedroomAct >= 5) score += 1;
+            
+            if (bathroomAct >= bathroomStd && bathroomStd >= 7) score += 4;
+            else if (bathroomAct >= 7) score += 3;
+            else if (bathroomAct >= 5) score += 1;
+            
+            const chores = parseInt(answers.householdChores) || 0;
+            if (chores >= 7) score += 8;
+            else if (chores >= 4) score += 5;
+            else if (chores >= 1) score += 2;
+            
+            const meals = parseInt(answers.mealsHelped) || 0;
+            if (meals >= 8) score += 5;
+            else if (meals >= 4) score += 3;
+            else if (meals >= 1) score += 1;
+            
+            const money = parseInt(answers.moneyReadiness) || 0;
+            score += Math.round((money / 10) * 7);
+            
+            const laundry = parseInt(answers.laundryReadiness) || 0;
+            score += Math.round((laundry / 10) * 7);
+            
+            const cooking = parseInt(answers.cookingReadiness) || 0;
+            score += Math.round((cooking / 10) * 6);
+            
+            if (answers.hasBudget === 'yes-stuck') score += 5;
+            else if (answers.hasBudget === 'yes-struggled') score += 2;
+            
+            if (answers.didLaundry === 'yes-always') score += 5;
+            else if (answers.didLaundry === 'yes-sometimes') score += 2;
+            
+            if (answers.titheAmount && answers.saveAmount && answers.spendWisely === 'yes') score += 5;
+            
+            return Math.min(score, 100);
+          };
 
-          {!showResults ? (
-            <div className="space-y-8">
-              {/* Age */}
-              <div>
-                <label className="block text-lg font-semibold mb-2">Your Age</label>
-                <input
-                  type="number"
-                  min="13"
-                  max="17"
-                  value={age}
-                  onChange={(e) => setAge(parseInt(e.target.value) || 16)}
-                  className="w-32 p-3 border-2 border-slate-300 rounded-lg text-xl font-bold"
-                />
-              </div>
+          const readiness = calculateReadiness();
 
-              {/* 2026 Vision */}
-              <div className="border-2 border-slate-200 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">Your 2026 Vision</h2>
-                <p className="text-slate-600 mb-6">Where do you want to go this year?</p>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="block font-semibold mb-2">What do you want to accomplish in 2026?</label>
-                    <textarea
-                      value={answers.goals2026}
-                      onChange={(e) => handleChange('goals2026', e.target.value)}
-                      rows="3"
-                      className="w-full p-3 border-2 border-slate-300 rounded-lg"
-                      placeholder="Academic, athletic, personal, spiritual goals..."
-                    />
-                  </div>
+          const calculateSkillValue = () => {
+            let total = 0;
+            const skills = {
+              dishes: 100, trash: 100, tidySpaces: 100, bathroom: 100, vacuum: 100, mop: 100,
+              laundry: 100, cooking: 100, yardWork: 50, carWash: 50, airFilters: 50,
+              ceilingFans: 50, doorknobs: 50, lightBulbs: 25, drains: 25, basicRepairs: 25,
+              mealPrep: 100, payBills: 100, filing: 50
+            };
+            Object.keys(skillCommitments).forEach(key => {
+              if (skillCommitments[key]) total += skills[key];
+            });
+            return total;
+          };
 
-                  <div>
-                    <label className="block font-semibold mb-2">What areas of growth are you most eager to learn?</label>
-                    <textarea
-                      value={answers.growthAreas}
-                      onChange={(e) => handleChange('growthAreas', e.target.value)}
-                      rows="3"
-                      className="w-full p-3 border-2 border-slate-300 rounded-lg"
-                      placeholder="Money, cooking, time management, leadership..."
-                    />
-                  </div>
+          const skillValue = calculateSkillValue();
+          const targetValue = age <= 15 ? 300 : 450;
 
-                  <div>
-                    <label className="block font-semibold mb-2">What do you need from us as parents?</label>
-                    <textarea
-                      value={answers.needFromParents}
-                      onChange={(e) => handleChange('needFromParents', e.target.value)}
-                      rows="3"
-                      className="w-full p-3 border-2 border-slate-300 rounded-lg"
-                      placeholder="Space? Guidance? Help with skills? Accountability?"
-                    />
-                  </div>
+          const getReadinessLevel = () => {
+            if (readiness >= 80) return { level: "Thriving & Almost Ready", message: "You're building real independence. Keep it up!" };
+            if (readiness >= 60) return { level: "Growing Strong", message: "Solid progress. Focus on the gaps." };
+            if (readiness >= 40) return { level: "Building Foundation", message: "Work to do. Let's make a plan." };
+            return { level: "Needs Attention", message: "Time for honest conversation." };
+          };
 
-                  <div>
-                    <label className="block font-semibold mb-2">What's working well in our family?</label>
-                    <textarea
-                      value={answers.whatsWorking}
-                      onChange={(e) => handleChange('whatsWorking', e.target.value)}
-                      rows="2"
-                      className="w-full p-3 border-2 border-slate-300 rounded-lg"
-                      placeholder="What do you appreciate?"
-                    />
-                  </div>
+          const readinessLevel = getReadinessLevel();
 
-                  <div>
-                    <label className="block font-semibold mb-2">What's not working? What needs to change?</label>
-                    <textarea
-                      value={answers.whatsNotWorking}
-                      onChange={(e) => handleChange('whatsNotWorking', e.target.value)}
-                      rows="2"
-                      className="w-full p-3 border-2 border-slate-300 rounded-lg"
-                      placeholder="Be honest - what's frustrating you?"
-                    />
-                  </div>
-                </div>
-              </div>
+          const skills = {
+            daily: [
+              { key: 'dishes', name: 'Kitchen cleanup', value: 100 },
+              { key: 'trash', name: 'Waste management', value: 100 },
+              { key: 'tidySpaces', name: 'Maintain shared spaces', value: 100 }
+            ],
+            weekly: [
+              { key: 'bathroom', name: 'Deep clean bathroom', value: 100 },
+              { key: 'vacuum', name: 'Vacuum house', value: 100 },
+              { key: 'mop', name: 'Mop floors', value: 100 },
+              { key: 'laundry', name: 'Do laundry', value: 100 },
+              { key: 'cooking', name: 'Cook meals (2x/week)', value: 100 },
+              { key: 'mealPrep', name: 'Shopping & meal prep', value: 100 },
+              { key: 'payBills', name: 'Pay bills on time', value: 100 },
+              { key: 'filing', name: 'File paperwork', value: 50 }
+            ],
+            monthly: [
+              { key: 'airFilters', name: 'Change air filters', value: 50 },
+              { key: 'ceilingFans', name: 'Clean ceiling fans', value: 50 },
+              { key: 'doorknobs', name: 'Sanitize high-touch areas', value: 50 }
+            ],
+            asNeeded: [
+              { key: 'yardWork', name: 'Yard work', value: 50 },
+              { key: 'carWash', name: 'Wash car', value: 50 },
+              { key: 'lightBulbs', name: 'Change light bulbs', value: 25 },
+              { key: 'drains', name: 'Unclog drains', value: 25 },
+              { key: 'basicRepairs', name: 'Basic repairs', value: 25 }
+            ]
+          };
 
-              {/* Academic */}
-              <div className="border-2 border-slate-200 rounded-lg p-6">
-                <div className="mb-4 p-4 bg-slate-100 rounded-lg">
-                  <p className="font-semibold mb-2">Why This Matters</p>
-                  <p className="text-sm text-slate-700">Strong grades + effort = more trust = more freedom</p>
-                </div>
-
-                <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <GraduationCap className="w-7 h-7" />
-                  Academic Progress
-                </h2>
-                
-                <div className="space-y-4">
-                  <label className="flex items-center gap-3 p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-blue-600">
-                    <input
-                      type="checkbox"
-                      checked={answers.enrolled}
-                      onChange={() => handleCheckbox('enrolled')}
-                      className="w-5 h-5"
-                    />
-                    <span className="font-medium">Currently enrolled in school</span>
-                  </label>
-
-                  <div>
-                    <label className="block font-semibold mb-2">Current grades:</label>
-                    <div className="space-y-2">
-                      {[
-                        { value: 'all-as', label: "All A's" },
-                        { value: 'mostly-as-bs', label: "Mostly A's with some B's" },
-                        { value: 'mostly-bs', label: "Mostly B's" },
-                        { value: 'has-c-or-lower', label: 'At least one C or lower' }
-                      ].map(option => (
-                        <label key={option.value} className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="radio"
-                            checked={answers.grades === option.value}
-                            onChange={() => handleChange('grades', option.value)}
-                            className="w-4 h-4"
-                          />
-                          <span>{option.label}</span>
+          return (
+            <div className="min-h-screen bg-slate-50 p-4 md:p-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                  <div className="border-b-2 border-slate-200 pb-6 mb-8">
+                    <div className="flex justify-between items-start flex-wrap gap-4">
+                      <div>
+                        <h1 className="text-4xl font-bold text-slate-900 mb-2">Azzarello Family Assessment</h1>
+                        <p className="text-xl text-slate-600">Training for Independence</p>
+                      </div>
+                      
+                      <div className="flex gap-2 flex-wrap">
+                        <button onClick={saveMonthlySnapshot} className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors" title="Save this month's snapshot">
+                          <Save className="w-4 h-4" />
+                          Save Month
+                        </button>
+                        <button onClick={exportData} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors" title="Download all data">
+                          <Download className="w-4 h-4" />
+                          Export
+                        </button>
+                        <label className="flex items-center gap-2 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg text-sm cursor-pointer transition-colors">
+                          <Upload className="w-4 h-4" />
+                          Import
+                          <input type="file" accept=".json" onChange={importData} className="hidden" />
                         </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <label className="flex items-center gap-3 p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-blue-600">
-                    <input
-                      type="checkbox"
-                      checked={answers.completesHomework}
-                      onChange={() => handleCheckbox('completesHomework')}
-                      className="w-5 h-5"
-                    />
-                    <span className="font-medium">I consistently complete homework on time</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Personal Development */}
-              <div className="border-2 border-slate-200 rounded-lg p-6">
-                <div className="mb-4 p-4 bg-slate-100 rounded-lg">
-                  <p className="font-semibold mb-2">Why This Matters</p>
-                  <p className="text-sm text-slate-700">Healthy habits = self-discipline = more trust = more freedom</p>
-                </div>
-
-                <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-7 h-7" />
-                  Personal Development
-                </h2>
-                
-                <div className="space-y-6">
-                  <div className="border-2 border-slate-200 rounded-lg p-4">
-                    <label className="block font-semibold mb-3">Exercise Goal & Actual</label>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm mb-2">Days you WANT to exercise/week:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="7"
-                          value={answers.gymGoal}
-                          onChange={(e) => handleChange('gymGoal', e.target.value)}
-                          className="w-full p-2 border-2 border-slate-300 rounded"
-                        />
                       </div>
-                      <div>
-                        <label className="block text-sm mb-2 text-blue-600">Days you DID exercise this week:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="7"
-                          value={answers.gymActual}
-                          onChange={(e) => handleChange('gymActual', e.target.value)}
-                          className="w-full p-2 border-2 border-blue-600 rounded"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border-2 border-slate-200 rounded-lg p-4">
-                    <label className="block font-semibold mb-3">Reading Goal & Actual</label>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm mb-2">Chapters/day you WANT to read:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={answers.readingGoal}
-                          onChange={(e) => handleChange('readingGoal', e.target.value)}
-                          className="w-full p-2 border-2 border-slate-300 rounded"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm mb-2 text-blue-600">Chapters you DID read this week:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={answers.readingActual}
-                          onChange={(e) => handleChange('readingActual', e.target.value)}
-                          className="w-full p-2 border-2 border-blue-600 rounded"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border-2 border-slate-200 rounded-lg p-4">
-                    <label className="block font-semibold mb-2">Hobby commitment:</label>
-                    <input
-                      type="text"
-                      value={answers.hobbyName}
-                      onChange={(e) => handleChange('hobbyName', e.target.value)}
-                      className="w-full p-2 border-2 border-slate-300 rounded mb-3"
-                      placeholder="What hobby?"
-                    />
-                    <label className="block text-sm mb-2">Hours/week you want to commit:</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={answers.hobbyHours}
-                      onChange={(e) => handleChange('hobbyHours', e.target.value)}
-                      className="w-full p-2 border-2 border-slate-300 rounded"
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="border-2 border-slate-200 rounded-lg p-4">
-                      <label className="block text-sm mb-2 text-blue-600">Nights in bed by 11pm this week:</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="7"
-                        value={answers.bedtimeActual}
-                        onChange={(e) => handleChange('bedtimeActual', e.target.value)}
-                        className="w-full p-2 border-2 border-blue-600 rounded"
-                      />
-                    </div>
-                    <div className="border-2 border-slate-200 rounded-lg p-4">
-                      <label className="block text-sm mb-2 text-blue-600">Days woke on time this week:</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="7"
-                        value={answers.wakeActual}
-                        onChange={(e) => handleChange('wakeActual', e.target.value)}
-                        className="w-full p-2 border-2 border-blue-600 rounded"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Household Skills */}
-              <div className="border-2 border-slate-200 rounded-lg p-6">
-                <div className="mb-4 p-4 bg-slate-100 rounded-lg">
-                  <p className="font-semibold mb-2">Why This Matters</p>
-                  <p className="text-sm text-slate-700">Volunteering to help without being asked = maturity = more freedom</p>
-                </div>
-
-                <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <Home className="w-7 h-7" />
-                  Household Skills
-                </h2>
-                
-                <div className="space-y-6">
-                  <div className="border-2 border-slate-200 rounded-lg p-4">
-                    <label className="block font-semibold mb-3">Bedroom Standards & Reality</label>
-                    <div className="mb-4">
-                      <label className="block text-sm mb-2">How SHOULD it look? (1-10)</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={answers.bedroomStandard}
-                        onChange={(e) => handleChange('bedroomStandard', e.target.value)}
-                        className="w-full"
-                      />
-                      <div className="text-center text-2xl font-bold">{answers.bedroomStandard}</div>
-                    </div>
-                    <div>
-                      <label className="block text-sm mb-2 text-blue-600">How does it ACTUALLY look?</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={answers.bedroomActual}
-                        onChange={(e) => handleChange('bedroomActual', e.target.value)}
-                        className="w-full"
-                      />
-                      <div className="text-center text-xl font-bold text-blue-600">{answers.bedroomActual}</div>
-                    </div>
-                  </div>
-
-                  <div className="border-2 border-slate-200 rounded-lg p-4">
-                    <label className="block font-semibold mb-3">Bathroom Standards & Reality</label>
-                    <div className="mb-4">
-                      <label className="block text-sm mb-2">How SHOULD it look? (1-10)</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={answers.bathroomStandard}
-                        onChange={(e) => handleChange('bathroomStandard', e.target.value)}
-                        className="w-full"
-                      />
-                      <div className="text-center text-2xl font-bold">{answers.bathroomStandard}</div>
-                    </div>
-                    <div>
-                      <label className="block text-sm mb-2 text-blue-600">How does it ACTUALLY look?</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={answers.bathroomActual}
-                        onChange={(e) => handleChange('bathroomActual', e.target.value)}
-                        className="w-full"
-                      />
-                      <div className="text-center text-xl font-bold text-blue-600">{answers.bathroomActual}</div>
-                    </div>
-                  </div>
-
-                  <div className="border-2 border-slate-200 rounded-lg p-4">
-                    <label className="block font-semibold mb-2">Times VOLUNTEERED to help (without being asked):</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={answers.householdChores}
-                      onChange={(e) => handleChange('householdChores', e.target.value)}
-                      className="w-full p-2 border-2 border-slate-300 rounded"
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="border-2 border-slate-200 rounded-lg p-4">
-                      <label className="block text-sm font-semibold mb-2">Money Readiness (1-10)</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={answers.moneyReadiness}
-                        onChange={(e) => handleChange('moneyReadiness', e.target.value)}
-                        className="w-full"
-                      />
-                      <div className="text-center text-xl font-bold">{answers.moneyReadiness}</div>
-                      <div className="mt-3">
-                        <label className="block text-xs mb-2">Budget status:</label>
-                        <select
-                          value={answers.hasBudget}
-                          onChange={(e) => handleChange('hasBudget', e.target.value)}
-                          className="w-full p-2 border-2 border-slate-300 rounded text-sm"
-                        >
-                          <option value="">Select</option>
-                          <option value="yes-stuck">Yes, stuck to it</option>
-                          <option value="yes-struggled">Yes, struggled</option>
-                          <option value="no">No budget</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="border-2 border-slate-200 rounded-lg p-4">
-                      <label className="block text-sm font-semibold mb-2">Laundry Readiness (1-10)</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={answers.laundryReadiness}
-                        onChange={(e) => handleChange('laundryReadiness', e.target.value)}
-                        className="w-full"
-                      />
-                      <div className="text-center text-xl font-bold">{answers.laundryReadiness}</div>
-                      <div className="mt-3">
-                        <label className="block text-xs mb-2">Did it without asking:</label>
-                        <select
-                          value={answers.didLaundry}
-                          onChange={(e) => handleChange('didLaundry', e.target.value)}
-                          className="w-full p-2 border-2 border-slate-300 rounded text-sm"
-                        >
-                          <option value="">Select</option>
-                          <option value="yes-always">Yes, all of it</option>
-                          <option value="yes-sometimes">Yes, with reminders</option>
-                          <option value="no">No</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="border-2 border-slate-200 rounded-lg p-4">
-                      <label className="block text-sm font-semibold mb-2">Cooking Readiness (1-10)</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={answers.cookingReadiness}
-                        onChange={(e) => handleChange('cookingReadiness', e.target.value)}
-                        className="w-full"
-                      />
-                      <div className="text-center text-xl font-bold">{answers.cookingReadiness}</div>
-                      <div className="mt-3">
-                        <label className="block text-xs mb-2">Times helped with meals:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={answers.mealsHelped}
-                          onChange={(e) => handleChange('mealsHelped', e.target.value)}
-                          className="w-full p-2 border-2 border-slate-300 rounded text-sm"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Allowance */}
-              <div className="border-2 border-slate-200 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <DollarSign className="w-7 h-7" />
-                  Managing Your $250 Allowance
-                </h2>
-                
-                <div className="bg-slate-100 rounded-lg p-4 mb-4">
-                  <p className="text-sm font-semibold mb-2">What Parents Pay For ($6,100/month):</p>
-                  <p className="text-xs">Rent, utilities, groceries, car, gas, healthcare, school, family subscriptions</p>
-                  <p className="text-sm font-semibold mt-3 mb-2">What YOU Pay For (from allowance):</p>
-                  <p className="text-xs">Eating out, entertainment, personal clothing, gifts, hobbies, personal subscriptions</p>
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm mb-2">Tithe monthly (Goal: $25)</label>
-                    <input
-                      type="number"
-                      value={answers.titheAmount}
-                      onChange={(e) => handleChange('titheAmount', e.target.value)}
-                      className="w-full p-2 border-2 border-slate-300 rounded"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm mb-2">Save monthly (Goal: $37.50)</label>
-                    <input
-                      type="number"
-                      value={answers.saveAmount}
-                      onChange={(e) => handleChange('saveAmount', e.target.value)}
-                      className="w-full p-2 border-2 border-slate-300 rounded"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm mb-2">Invest monthly (Goal: $25)</label>
-                    <input
-                      type="number"
-                      value={answers.investAmount}
-                      onChange={(e) => handleChange('investAmount', e.target.value)}
-                      className="w-full p-2 border-2 border-slate-300 rounded"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm mb-2">Do you spend remaining money wisely?</label>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        checked={answers.spendWisely === 'yes'}
-                        onChange={() => handleChange('spendWisely', 'yes')}
-                      />
-                      <span className="text-sm">Yes, intentional spending</span>
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        checked={answers.spendWisely === 'no'}
-                        onChange={() => handleChange('spendWisely', 'no')}
-                      />
-                      <span className="text-sm">No, impulse buying struggles</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setShowResults(true)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg text-lg transition-colors"
-              >
-                See My Results & Development Plan
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              {/* Readiness Score */}
-              <div className="text-center border-2 border-slate-200 rounded-lg p-8">
-                <h3 className="text-3xl font-bold mb-4">Independence Readiness</h3>
-                <div className="text-7xl font-bold text-blue-600 mb-4">{readiness}%</div>
-                <div className="text-2xl font-semibold mb-2">{readinessLevel.level}</div>
-                <p className="text-slate-600">{readinessLevel.message}</p>
-              </div>
-
-              {/* Cost Comparison */}
-              <div className="border-2 border-slate-200 rounded-lg p-6">
-                <h3 className="text-2xl font-bold mb-6">Understanding Household Costs</h3>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="border-2 border-slate-300 rounded-lg p-4">
-                    <h4 className="text-lg font-bold mb-4">Living With Us (1/6th share)</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between"><span>Mortgage</span><span>$250</span></div>
-                      <div className="flex justify-between"><span>Utilities</span><span>$117</span></div>
-                      <div className="flex justify-between"><span>Groceries</span><span>$333</span></div>
-                      <div className="flex justify-between"><span>Car</span><span>$167</span></div>
-                      <div className="flex justify-between"><span>Gas</span><span>$67</span></div>
-                      <div className="flex justify-between"><span>Healthcare</span><span>$50</span></div>
-                      <div className="flex justify-between"><span>School</span><span>$17</span></div>
-                      <div className="flex justify-between"><span>Subscriptions</span><span>$16</span></div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t-2 font-bold flex justify-between text-lg">
-                      <span>Your Share:</span><span>$1,017/mo</span>
-                    </div>
-                  </div>
-
-                  <div className="border-2 border-slate-300 rounded-lg p-4">
-                    <h4 className="text-lg font-bold mb-4">If You Lived Alone</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between"><span>Rent</span><span>$1,500</span></div>
-                      <div className="flex justify-between"><span>Utilities</span><span>$200</span></div>
-                      <div className="flex justify-between"><span>Groceries</span><span>$500</span></div>
-                      <div className="flex justify-between"><span>Car</span><span>$1,000</span></div>
-                      <div className="flex justify-between"><span>Gas</span><span>$400</span></div>
-                      <div className="flex justify-between"><span>Healthcare</span><span>$300</span></div>
-                      <div className="flex justify-between"><span>Household</span><span>$75</span></div>
-                      <div className="flex justify-between"><span>Subscriptions</span><span>$50</span></div>
-                      <div className="flex justify-between"><span>Food/Eating</span><span>$400</span></div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t-2 font-bold flex justify-between text-lg">
-                      <span>Total:</span><span>$4,425/mo</span>
-                    </div>
-                    <p className="text-xs text-slate-600 mt-2">Need $53k+/year job!</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Monthly Development Meeting Agreement */}
-              <div className="border-2 border-blue-600 rounded-lg p-6 bg-blue-50">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  <Calendar className="w-7 h-7" />
-                  Monthly Development Meeting Agreement
-                </h3>
-                
-                <div className="bg-white rounded-lg p-4 mb-4">
-                  <p className="font-semibold mb-3">I commit to a monthly 1-hour meeting with Mom & Dad:</p>
-                  
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <p><strong>When:</strong> First weekend of each month (as close to the 1st as possible)</p>
                     </div>
                     
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <p><strong>What I'll bring:</strong> Grades & assignments (from school website), Budget with all expenses tracked</p>
-                    </div>
-                    
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold mb-1">What we'll review:</p>
-                        <ul className="ml-4 space-y-1">
-                          <li>• Expenses & budgeting (tithing, saving, spending)</li>
-                          <li>• Academic performance (grades, effort, homework)</li>
-                          <li>• Household contribution (initiative, volunteering)</li>
-                          <li>• Overall health (exercise, sleep, reading, hobbies)</li>
-                          <li>• Progress on skill commitments</li>
-                          <li>• Goals tracker & next month's plan</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-slate-100 rounded-lg p-4 mb-4">
-                  <p className="font-semibold mb-2 flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5" />
-                    If I'm slipping in any area:
-                  </p>
-                  <ul className="text-sm space-y-1 ml-7">
-                    <li>• <strong>Academic:</strong> Less time with friends, more study oversight</li>
-                    <li>• <strong>Household:</strong> More required chores, fewer privileges</li>
-                    <li>• <strong>Financial:</strong> Allowance review, more budget accountability</li>
-                    <li>• <strong>Health:</strong> More accountability on habits and routines</li>
-                  </ul>
-                  <p className="text-sm mt-3 font-semibold">Bottom line: Less freedom, more structure until I show responsibility</p>
-                </div>
-
-                <div className="bg-white rounded-lg p-4">
-                  <p className="font-semibold mb-3">I understand and agree to this monthly accountability:</p>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4">
-                      <span className="font-medium w-32">My Signature:</span>
-                      <div className="flex-1 border-b-2 border-slate-300 pb-1"></div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="font-medium w-32">Date:</span>
-                      <div className="w-48 border-b-2 border-slate-300 pb-1"></div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="font-medium w-32">Parents:</span>
-                      <div className="flex-1 border-b-2 border-slate-300 pb-1"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Skills Development Plan - Simplified for space */}
-              <div className="border-2 border-slate-200 rounded-lg p-6">
-                <h3 className="text-2xl font-bold mb-4">Your Skills Development Commitments</h3>
-                <p className="text-slate-600 mb-4">Target: ${targetValue}/month in skill value</p>
-                
-                <div className="space-y-4">
-                  {Object.values(skills).flat().map(skill => (
-                    <label key={skill.key} className="flex items-center gap-3 p-3 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-blue-600">
-                      <input
-                        type="checkbox"
-                        checked={skillCommitments[skill.key]}
-                        onChange={() => handleSkillToggle(skill.key)}
-                        className="w-5 h-5"
-                      />
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium">{skill.name}</span>
-                          <span className="font-bold">${skill.value}</span>
+                    {savedMonths.length > 0 && (
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-sm font-semibold text-blue-900 mb-2">
+                          Saved Assessments: {savedMonths.length} month{savedMonths.length !== 1 ? 's' : ''}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {savedMonths.slice(-6).map((snapshot, idx) => (
+                            <span key={idx} className="text-xs bg-white px-2 py-1 rounded border border-blue-200">
+                              {snapshot.month}: {snapshot.readiness}%
+                            </span>
+                          ))}
                         </div>
                       </div>
-                    </label>
-                  ))}
-                </div>
-
-                <div className="mt-6 p-4 bg-blue-600 text-white rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">Total Skills Value:</span>
-                    <span className="text-3xl font-bold">${skillValue}</span>
+                    )}
+                    
+                    <div className="mt-3 text-xs text-slate-500">💾 Your answers auto-save as you type</div>
                   </div>
-                  {skillValue >= targetValue ? (
-                    <p className="mt-2 text-sm">Excellent! You're hitting your target!</p>
+
+                  <div className="bg-slate-100 rounded-lg p-6 mb-8">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-4">How This Assessment Works</h2>
+                    <div className="space-y-4 text-slate-700">
+                      <div className="border-l-4 border-blue-600 pl-4">
+                        <p className="font-semibold text-lg mb-1">This Is About Your Freedom</p>
+                        <p className="text-sm">Master skills now → confidence at 18 → successful independence</p>
+                      </div>
+                      <div className="border-l-4 border-blue-600 pl-4">
+                        <p className="font-semibold text-lg mb-1">You're Not Paying Rent</p>
+                        <p className="text-sm">Your share: $1,017/month. Living alone: $4,425/month. This is education.</p>
+                      </div>
+                      <div className="border-l-4 border-blue-600 pl-4">
+                        <p className="font-semibold text-lg mb-1">Goal: Launch You Successfully</p>
+                        <p className="text-sm">We're training you for independent adulthood, not keeping you dependent.</p>
+                      </div>
+                    </div>
+                    <div className="mt-6 p-4 bg-blue-600 text-white rounded-lg">
+                      <p className="font-bold text-lg text-center">$6,100/mo Family Costs | $1,017 Your Share | $4,425 If Living Alone</p>
+                    </div>
+                  </div>
+
+                  {!showResults ? (
+                    <div className="space-y-8">
+                      <div>
+                        <label className="block text-lg font-semibold mb-2">Your Age</label>
+                        <input type="number" min="13" max="17" value={age} onChange={(e) => setAge(parseInt(e.target.value) || 16)}
+                          className="w-32 p-3 border-2 border-slate-300 rounded-lg text-xl font-bold" />
+                      </div>
+
+                      <div className="border-2 border-slate-200 rounded-lg p-6">
+                        <h2 className="text-2xl font-bold text-slate-900 mb-4">Your 2026 Vision</h2>
+                        <p className="text-slate-600 mb-6">Where do you want to go this year?</p>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block font-semibold mb-2">What do you want to accomplish in 2026?</label>
+                            <textarea value={answers.goals2026} onChange={(e) => handleChange('goals2026', e.target.value)} rows="3"
+                              className="w-full p-3 border-2 border-slate-300 rounded-lg" placeholder="Academic, athletic, personal, spiritual goals..." />
+                          </div>
+                          <div>
+                            <label className="block font-semibold mb-2">What areas of growth are you most eager to learn?</label>
+                            <textarea value={answers.growthAreas} onChange={(e) => handleChange('growthAreas', e.target.value)} rows="3"
+                              className="w-full p-3 border-2 border-slate-300 rounded-lg" placeholder="Money, cooking, time management..." />
+                          </div>
+                          <div>
+                            <label className="block font-semibold mb-2">What do you need from us as parents?</label>
+                            <textarea value={answers.needFromParents} onChange={(e) => handleChange('needFromParents', e.target.value)} rows="3"
+                              className="w-full p-3 border-2 border-slate-300 rounded-lg" placeholder="Space? Guidance? Accountability?" />
+                          </div>
+                          <div>
+                            <label className="block font-semibold mb-2">What's working well in our family?</label>
+                            <textarea value={answers.whatsWorking} onChange={(e) => handleChange('whatsWorking', e.target.value)} rows="2"
+                              className="w-full p-3 border-2 border-slate-300 rounded-lg" placeholder="What do you appreciate?" />
+                          </div>
+                          <div>
+                            <label className="block font-semibold mb-2">What's not working? What needs to change?</label>
+                            <textarea value={answers.whatsNotWorking} onChange={(e) => handleChange('whatsNotWorking', e.target.value)} rows="2"
+                              className="w-full p-3 border-2 border-slate-300 rounded-lg" placeholder="Be honest" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <button onClick={() => setShowResults(true)}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg text-lg transition-colors">
+                        See My Results & Development Plan
+                      </button>
+                    </div>
                   ) : (
-                    <p className="mt-2 text-sm">Add ${targetValue - skillValue} more to reach target</p>
+                    <div className="space-y-8">
+                      <div className="text-center border-2 border-slate-200 rounded-lg p-8">
+                        <h3 className="text-3xl font-bold mb-4">Independence Readiness</h3>
+                        <div className="text-7xl font-bold text-blue-600 mb-4">{readiness}%</div>
+                        <div className="text-2xl font-semibold mb-2">{readinessLevel.level}</div>
+                        <p className="text-slate-600">{readinessLevel.message}</p>
+                      </div>
+
+                      <div className="border-2 border-slate-200 rounded-lg p-6">
+                        <h3 className="text-2xl font-bold mb-6">Understanding Household Costs</h3>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div className="border-2 border-slate-300 rounded-lg p-4">
+                            <h4 className="text-lg font-bold mb-4">Living With Us (1/6th share)</h4>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex justify-between"><span>Mortgage</span><span>$250</span></div>
+                              <div className="flex justify-between"><span>Utilities</span><span>$117</span></div>
+                              <div className="flex justify-between"><span>Groceries</span><span>$333</span></div>
+                              <div className="flex justify-between"><span>Car</span><span>$167</span></div>
+                              <div className="flex justify-between"><span>Gas</span><span>$67</span></div>
+                              <div className="flex justify-between"><span>Healthcare</span><span>$50</span></div>
+                              <div className="flex justify-between"><span>School</span><span>$17</span></div>
+                              <div className="flex justify-between"><span>Subscriptions</span><span>$16</span></div>
+                            </div>
+                            <div className="mt-4 pt-4 border-t-2 font-bold flex justify-between text-lg">
+                              <span>Your Share:</span><span>$1,017/mo</span>
+                            </div>
+                          </div>
+
+                          <div className="border-2 border-slate-300 rounded-lg p-4">
+                            <h4 className="text-lg font-bold mb-4">If You Lived Alone</h4>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex justify-between"><span>Rent</span><span>$1,500</span></div>
+                              <div className="flex justify-between"><span>Utilities</span><span>$200</span></div>
+                              <div className="flex justify-between"><span>Groceries</span><span>$500</span></div>
+                              <div className="flex justify-between"><span>Car</span><span>$1,000</span></div>
+                              <div className="flex justify-between"><span>Gas</span><span>$400</span></div>
+                              <div className="flex justify-between"><span>Healthcare</span><span>$300</span></div>
+                              <div className="flex justify-between"><span>Household</span><span>$75</span></div>
+                              <div className="flex justify-between"><span>Subscriptions</span><span>$50</span></div>
+                              <div className="flex justify-between"><span>Food/Eating</span><span>$400</span></div>
+                            </div>
+                            <div className="mt-4 pt-4 border-t-2 font-bold flex justify-between text-lg">
+                              <span>Total:</span><span>$4,425/mo</span>
+                            </div>
+                            <p className="text-xs text-slate-600 mt-2">Need $53k+/year job!</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <button onClick={() => window.print()}
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors">
+                          Print Development Plan
+                        </button>
+                        <button onClick={() => { setShowResults(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="flex-1 bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 rounded-lg transition-colors">
+                          Start Over
+                        </button>
+                      </div>
+
+                      <div className="text-center text-slate-600 text-sm pt-4 border-t-2">
+                        <p className="font-medium mb-1">We're proud of you and committed to your success!</p>
+                        <p>This is your journey - we're here to support you every step.</p>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-4">
-                <button
-                  onClick={() => window.print()}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors"
-                >
-                  Print Development Plan
-                </button>
-                <button
-                  onClick={() => {
-                    setShowResults(false);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="flex-1 bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 rounded-lg transition-colors"
-                >
-                  Start Over
-                </button>
-              </div>
-
-              <div className="text-center text-slate-600 text-sm pt-4 border-t-2">
-                <p className="font-medium mb-1">We're proud of you and committed to your success!</p>
-                <p>This is your journey - we're here to support you every step.</p>
-              </div>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+          );
+        }
+
         ReactDOM.render(React.createElement(TeenAssessment), document.getElementById('root'));
     </script>
 </body>
 </html>
- 
