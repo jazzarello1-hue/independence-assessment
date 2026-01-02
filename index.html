@@ -206,15 +206,7 @@
           const skillValue = calculateSkillValue();
           const targetValue = age <= 15 ? 300 : 450;
 
-          const getReadinessLevel = () => {
-            const getAllowancePotential = () => {
-  if (readiness >= 80) return 250;
-  if (readiness >= 60) return 200;
-  if (readiness >= 40) return 150;
-  if (readiness >= 20) return 100;
-  return 50;
-};
-const allowancePotential = getAllowancePotential();  
+          const getReadinessLevel = () => { 
             if (readiness >= 80) return { level: "Thriving & Almost Ready", message: "You're building real independence. Keep it up!" };
             if (readiness >= 60) return { level: "Growing Strong", message: "Solid progress. Focus on the gaps." };
             if (readiness >= 40) return { level: "Building Foundation", message: "Work to do. Let's make a plan." };
@@ -223,6 +215,15 @@ const allowancePotential = getAllowancePotential();
 
           const readinessLevel = getReadinessLevel();
 
+            const getAllowancePotential = () => {
+  if (readiness >= 80) return 250;
+  if (readiness >= 60) return 200;
+  if (readiness >= 40) return 150;
+  if (readiness >= 20) return 100;
+  return 50;
+};
+
+const allowancePotential = getAllowancePotential();
           const skills = {
             daily: [
               { key: 'dishes', name: 'Kitchen cleanup', value: 100 },
