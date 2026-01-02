@@ -74,7 +74,7 @@
             const updated = [...savedMonths, snapshot];
             setSavedMonths(updated);
             localStorage.setItem('azzarello-saved-months', JSON.stringify(updated));
-            alert(\`Saved \${month}!\`);
+            alert('Saved ' + month + '!');
           };
 
           const exportData = () => {
@@ -82,7 +82,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = \`assessment-\${new Date().toISOString().split('T')[0]}.json\`;
+            a.download = 'assessment-' + new Date().toISOString().split('T')[0] + '.json';
             a.click();
           };
 
