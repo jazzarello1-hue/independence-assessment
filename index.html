@@ -207,6 +207,14 @@
           const targetValue = age <= 15 ? 300 : 450;
 
           const getReadinessLevel = () => {
+            const getAllowancePotential = () => {
+  if (readiness >= 80) return 250;
+  if (readiness >= 60) return 200;
+  if (readiness >= 40) return 150;
+  if (readiness >= 20) return 100;
+  return 50;
+};
+const allowancePotential = getAllowancePotential();  
             if (readiness >= 80) return { level: "Thriving & Almost Ready", message: "You're building real independence. Keep it up!" };
             if (readiness >= 60) return { level: "Growing Strong", message: "Solid progress. Focus on the gaps." };
             if (readiness >= 40) return { level: "Building Foundation", message: "Work to do. Let's make a plan." };
@@ -291,7 +299,8 @@
                     <div className="mt-3 text-xs text-slate-500">💾 Your answers auto-save as you type</div>
                   </div>
 
-                  <div className="bg-slate-100 rounded-lg p-6 mb-8">
+                  <p className="font-bold text-lg text-center">$6,100/mo Family Costs | $1,017 Your Share | $4,425 If Living Alone</p>
+<p className="font-bold text-lg text-center mt-2 text-green-600">Next Month's Allowance Potential: ${allowancePotential}</p>
                     <h2 className="text-2xl font-bold text-slate-900 mb-4">How This Assessment Works</h2>
                     <div className="space-y-4 text-slate-700">
                       <div className="border-l-4 border-blue-600 pl-4">
